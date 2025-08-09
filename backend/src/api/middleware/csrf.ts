@@ -14,6 +14,7 @@ declare global {
 // common type incompatibility between csurf and express
 const csrfProtection = csrf({ cookie: true }) as any;
 const parseForm = bodyParser.urlencoded({ extended: false });
+console.log(parseForm);
 
 const csrfMiddleware = (app: Express): void => {
   app.use(cookieParser());
