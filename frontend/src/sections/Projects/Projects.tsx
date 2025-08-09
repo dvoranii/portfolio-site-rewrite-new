@@ -2,6 +2,8 @@ import * as S from "./Projects.styles";
 import SectionTitle from "../../components/SectionTitle/SectionTitle";
 import { Element } from "react-scroll";
 import { useScrollOpacity } from "../../Hooks/useScrollOpacity";
+import Modal from "./Modal/Modal";
+import projects, { type Project } from "./config/projectsData";
 
 import GUMThumb from "../../assets/images/Projects/GUM.webp";
 import YMCAThumb from "../../assets/images/Projects/YMCA-BG.png";
@@ -12,14 +14,46 @@ import CGLThumb from "../../assets/images/Projects/CGL-Thumb.webp";
 import FSFThumb from "../../assets/images/Projects/fsf-portfolio-thumbnail.png";
 import IldiDevThumb from "../../assets/images/Projects/ildidev-thumb.png";
 import PersonalProjectsThumb from "../../assets/images/Projects/personal-projects-thumb.png";
+import { useState } from "react";
+
+const thumbnailMap: Record<number, string> = {
+  1: GUMThumb,
+  2: YMCAThumb,
+  3: ElegantWhite,
+  4: OPThumb,
+  5: CGLThumb,
+  6: OGThumb,
+  7: PersonalProjectsThumb,
+  8: IldiDevThumb,
+};
+
+const bgPositionMap: Record<number, string> = {
+  1: "0px -95px",
+  2: "center",
+  3: "center",
+  4: "-40px",
+  5: "-10px",
+  6: "0px -130px",
+  7: "0px -25px",
+  8: "0px",
+};
 
 const Projects = () => {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const styles = useScrollOpacity("projects", 150, 0.4, {
     animateBackground: true,
     animateBrightness: true,
     startBg: "#000000",
     endBg: "#ffffff",
   });
+
+  const handleProjectClick = (project: Project) => {
+    setSelectedProject(project);
+    setIsModalOpen(true);
+  };
+
   return (
     <>
       <SectionTitle textContent="Projects" paddingTop="2.4rem" />
@@ -36,75 +70,35 @@ const Projects = () => {
           <S.ProjectsWrapper>
             <S.ProjectsGridWrapper>
               <S.ProjectsGrid>
-                {/* Row 1 */}
-                <S.Project1>
-                  <S.GridItemBackground
-                    style={{
-                      backgroundImage: `url(${GUMThumb})`,
-                      backgroundPosition: "0px -95px",
-                    }}
-                  />
-                </S.Project1>
-                <S.Project2>
-                  <S.GridItemBackground
-                    style={{ backgroundImage: `url(${YMCAThumb})` }}
-                  />
-                </S.Project2>
-
-                {/* Row 2 */}
-                <S.Project3>
-                  <img src={FSFThumb} alt="" />
-                  <S.GridItemBackground
-                    style={{ backgroundImage: `url(${ElegantWhite})` }}
-                  />
-                </S.Project3>
-                <S.Project4>
-                  <S.GridItemBackground
-                    style={{
-                      backgroundImage: `url(${OPThumb})`,
-                      backgroundPosition: "-40px",
-                    }}
-                  />
-                </S.Project4>
-
-                {/* Row 3-4 */}
-                <S.Project5>
-                  <S.GridItemBackground
-                    style={{
-                      backgroundImage: `url(${CGLThumb})`,
-                      backgroundPosition: "-10px",
-                    }}
-                  />
-                </S.Project5>
-                <S.Project6>
-                  <S.GridItemBackground
-                    style={{
-                      backgroundImage: `url(${OGThumb})`,
-                      backgroundPosition: "0px -130px",
-                    }}
-                  />
-                </S.Project6>
-                <S.Project7>
-                  <S.GridItemBackground
-                    style={{
-                      backgroundImage: `url(${PersonalProjectsThumb})`,
-                      backgroundPosition: "0px -25px",
-                    }}
-                  />
-                </S.Project7>
-                <S.Project8>
-                  <S.GridItemBackground
-                    style={{
-                      backgroundImage: `url(${IldiDevThumb})`,
-                      backgroundPosition: "0px",
-                    }}
-                  />
-                </S.Project8>
+                {projects.map((project) => (
+                  <S.ProjectItem
+                    key={project.id}
+                    onClick={() => handleProjectClick(project)}
+                    $gridArea={`project${project.id}`}
+                    $isProject3={project.id === 3}
+                  >
+                    <S.GridItemBackground
+                      style={{
+                        backgroundImage: `url(${thumbnailMap[project.id]})`,
+                        backgroundPosition: bgPositionMap[project.id],
+                      }}
+                    />
+                    {project.id === 3 && (
+                      <S.Project3Image src={FSFThumb} alt="" />
+                    )}
+                  </S.ProjectItem>
+                ))}
               </S.ProjectsGrid>
             </S.ProjectsGridWrapper>
           </S.ProjectsWrapper>
         </S.ProjectsSection>
       </Element>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        project={selectedProject}
+      />
     </>
   );
 };

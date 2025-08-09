@@ -87,11 +87,12 @@ export const InputWrapper = styled.div`
 export const ErrorMessage = styled.span`
   position: absolute;
   left: 2px;
-  top: 4.5rem;
-  font-size: 1.1rem;
+  top: 3.1rem;
+  font-size: 0.8rem;
   color: white;
   letter-spacing: 0.3px;
   margin-top: 3px;
+  font-family: "Montserrat", sans-serif;
 
   @media (max-width: 527px) {
     font-size: 1rem;
